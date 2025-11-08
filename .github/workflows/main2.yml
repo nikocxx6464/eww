@@ -32,7 +32,8 @@ jobs:
           libcairo-dev \
           libglib2.0-dev \
           libpango1.0-dev \
-          libdbusmenu-gtk3-dev
+          libdbusmenu-gtk3-dev \
+          libgtk-layer-shell-dev
         
     - name: Build .deb Package Natively
       run: |
