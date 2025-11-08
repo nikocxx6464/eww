@@ -1,0 +1,46 @@
+name: Build Native AArch64 Debian Package (ARM Runner)
+
+on:
+  # Allows you to manually trigger the workflow from the GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  build_native_arm64_deb: 
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Install Rust Toolchain
+      # Use a standard Rust setup, no special target needed as the runner is ARM64
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+        
+    - name: Install cargo-deb
+      # Install the debian packaging tool
+      run: cargo install cargo-deb
+
+    - name: Install Native System Dependencies
+      # Install standard dev dependencies without the :arm64 suffix
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libgtk-3-dev \
+          libgdk-pixbuf2.0-dev \
+          libcairo-dev \
+          libglib2.0-dev \
+          libpango1.0-dev \
+          libdbusmenu-gtk3-dev
+        
+    - name: Build .deb Package Natively
+      run: |
+        # cargo deb will now build directly for the runner's native architecture (AArch64)
+        cargo deb --output target/eww.deb
+
+    - name: Upload AArch64 .deb artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: eww-aarch64-deb
+        path: target/eww.deb
