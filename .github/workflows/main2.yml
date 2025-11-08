@@ -37,7 +37,7 @@ jobs:
     - name: Build .deb Package Natively
       run: |
         # cargo deb will now build directly for the runner's native architecture (AArch64)
-        cargo deb --output target/eww.deb
+        cargo deb -p eww --output target/eww.deb
 
     - name: Upload AArch64 .deb artifact
       uses: actions/upload-artifact@v4
